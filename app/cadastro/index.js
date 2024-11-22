@@ -9,7 +9,7 @@ export default function CadastroScreen() {
 
   const handleRegister = () => {
     Alert.alert("Cadastro realizado!", "Redirecionando para tela de produtos.");
-    router.push("perfil");
+    router.push("home");
   };
 
   return (
