@@ -17,7 +17,7 @@ export default function LoginScreen() {
       Alert.alert("Login bem-sucedido!");
       router.push("home"); // Redireciona para a tela principal
     } catch (error) {
-      Alert.alert("Erro", "Credenciais inválidas. Tente novamente.");
+      Alert.alert("Erro", "erro de login. Tente novamente.");
     }
   };
 
