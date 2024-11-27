@@ -13,7 +13,7 @@ export default function CadastroScreen() {
     if (email && senha && nomeCompleto && usuario) {
       // Aqui você pode adicionar a lógica de cadastro, como enviar os dados para uma API.
       Alert.alert('Cadastro realizado com sucesso!');
-      router.navigate(''); // Redireciona para a tela de login após o cadastro.
+      router.push(''); // Redireciona para a tela de login após o cadastro.
     } else {
       Alert.alert('Preencha todos os campos!');
     }
@@ -22,7 +22,7 @@ export default function CadastroScreen() {
   return (
     <View style={styles.container}>
       {/* Botão de Voltar */}
-      <TouchableOpacity style={styles.backButton} onPress={() => router.navigate('')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.push('')}>
         <Text style={styles.backButtonText}>{"<"} Voltar</Text>
       </TouchableOpacity>
 

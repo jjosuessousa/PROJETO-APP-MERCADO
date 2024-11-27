@@ -9,16 +9,17 @@ export default function LoginScreen() {
   const Login = useAuthStore((state) => state.Login);
   const router = useRouter();
 
-  // Usa a função `login` da store Zustand
-  const { login } = useAuthStore();
-
-  const handleLogin = () => {
-    try {
-      login(username, password); // Verifica credenciais
-      Alert.alert("Login bem-sucedido!");
-      router.push(""); // Redireciona para a tela principal
-    } catch (error) {
-      Alert.alert("Erro", "Credenciais inválidas. Tente novamente.");
+  const logar = async () => {
+    if (usuario && senha) {
+      const response = await Login(usuario, senha);
+      if (response.success) {
+        Alert.alert('Sucesso', response.message);
+        router.push('product'); // Redireciona para a tela de produtos
+      } else {
+        Alert.alert('Erro', response.message);
+      }
+    } else {
+      Alert.alert('Atenção', 'Preencha todos os campos!');
     }
   };
 
@@ -26,7 +27,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       {/* Logo */}
       <Image
-        source={require('../assets/images/logo.png')} // Substitua pelo caminho do seu logo
+        source={require('./src/logo.png')} // Substitua pelo caminho do seu logo
         style={styles.logo}
       />
 
@@ -70,25 +71,51 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 10 },
-  title: { fontSize: 24, marginBottom: 20 },
-  input: { borderWidth: 1, padding: 10, marginBottom: 20 },
-  button: { backgroundColor: "blue", padding: 15 },
-  buttonText: { color: "white", textAlign: "center" },
-  linkText: { color: "blue", marginTop: 20, fontWeight: "bold" },
-  image: { width: 150, height: 150, marginVertical: 20, alignSelf: "center" },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+    backgroundColor: '#f9f9f9',
+  },
+  button: {
+    backgroundColor: '#28a745',
+    paddingVertical: 15,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  registerText: {
+    color: '#007bff',
+    textDecorationLine: 'underline',
+    marginTop: 10,
+  },
 });
-/*Explicação
-Credenciais Cadastradas:
-
-A store contém um array usuariosCadastrados com as credenciais válidas.
-Durante o login, a função find verifica se o username e password informados correspondem a um registro existente.
-Erro para Credenciais Inválidas:
-
-Se nenhuma combinação for encontrada, a função login dispara um erro com a mensagem "Credenciais inválidas".
-Logout:
-
-A função logout redefine os estados relacionados ao login.
-Alerta no Frontend:
-
-O componente exibe um alerta apropriado com Alert.alert para indicar sucesso ou erro no login.*/
