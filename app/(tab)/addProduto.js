@@ -1,215 +1,189 @@
-
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
-  StyleSheet,
+  Button,
   Alert,
-  TouchableOpacity,
   Image,
-} from "react-native";
-import * as ImagePicker from "expo-image-picker";
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
+import { launchCameraAsync, useCameraPermissions, PermissionStatus } from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
-const API_PRODUCTS_URL = "https://api-produtos-6p7n.onrender.com/products";
+export default function AddDataWithImage() {
+  // Estados para armazenar os valores dos campos do formulário
+  const [local, setLocal] = useState('');
+  const [nome, setNome] = useState('');
+  const [preco, setPreco] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [observacao, setObservacao] = useState('');
+  const [pickedImage, setPickedImage] = useState(null);
 
-export default function AddProduto() {
-  const [nome, setNome] = useState("");
-  const [preco, setPreco] = useState("");
-  const [local, setLocal] = useState("");
-  const [categoria, setCategoria] = useState("");
-  const [observacao, setObservacao] = useState("");
-  const [foto, setFoto] = useState(null); // Foto capturada
+  // Hook para gerenciar permissões de câmera
+  const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
 
-  // Função para abrir a câmera
-  const handleTakePhoto = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permission.granted) {
-      Alert.alert("Permissão necessária", "É necessário permitir o uso da câmera.");
-      return;
+  // Função para verificar se a permissão para acessar a câmera foi concedida
+  async function verifyPermission() {
+    if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission(); // Solicita permissão
+      return permissionResponse.granted; // Retorna se a permissão foi concedida
     }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.5,
+    if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
+      Alert.alert(
+        'Permissão Negada',
+        'Conceda acesso à câmera para usar este recurso.'
+      );
+      return false; // Permissão negada
+    }
+
+    return true; // Permissão já concedida
+  }
+
+  // Função chamada ao pressionar o botão "Tirar Foto"
+  async function handleTakePhoto() {
+    const hasPermission = await verifyPermission(); // Verifica permissões
+    if (!hasPermission) return; // Interrompe se não houver permissão
+
+    const imageResult = await launchCameraAsync({
+      allowsEditing: true, // Permite edição da imagem
+      aspect: [16, 9], // Define proporção
+      quality: 0.5, // Reduz qualidade para economizar espaço
     });
 
-    if (!result.canceled) {
-      setFoto(result.uri);
+    if (!imageResult.canceled) {
+      setPickedImage(imageResult.assets[0].uri); // Armazena o URI da imagem capturada
     }
-  };
+  }
 
-  // Função para salvar o produto
-  const handleAddProduct = async () => {
-    if (!nome || !preco || !local || !categoria || !foto) {
-      Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
+  // Função para salvar a imagem e os dados no dispositivo
+  async function handleSaveData() {
+    // Valida se todos os campos obrigatórios estão preenchidos
+    if (!local || !nome || !preco || !categoria || !pickedImage) {
+      Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
       return;
     }
-
-    const formData = new FormData();
-    formData.append("nome", nome);
-    formData.append("preco", preco);
-    formData.append("local", local);
-    formData.append("categoria", categoria);
-    formData.append("observacao", observacao);
-    formData.append("foto", {
-      uri: foto,
-      type: "image/jpeg",
-      name: `foto_${Date.now()}.jpg`,
-    });
 
     try {
-      const response = await fetch(API_PRODUCTS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: formData,
-      });
+      // Copia a imagem para o armazenamento interno do dispositivo
+      const fileName = pickedImage.split('/').pop(); // Extrai o nome do arquivo da URI
+      const newPath = FileSystem.documentDirectory + fileName;
 
-      if (response.ok) {
-        Alert.alert("Sucesso", "Produto adicionado com sucesso!");
-        setNome("");
-        setPreco("");
-        setLocal("");
-        setCategoria("");
-        setObservacao("");
-        setFoto(null);
-      } else {
-        Alert.alert("Erro", "Não foi possível adicionar o produto.");
-      }
+      await FileSystem.copyAsync({ from: pickedImage, to: newPath });
+
+      Alert.alert(
+        'Dados Salvos',
+        `Imagem salva com sucesso!\nLocal: ${newPath}\n\nOutros Dados:\n- Local: ${local}\n- Nome: ${nome}\n- Preço: ${preco}\n- Categoria: ${categoria}\n- Observação: ${observacao}`
+      );
     } catch (error) {
-      console.error(error);
-      Alert.alert("Erro", "Ocorreu um erro ao adicionar o produto.");
+      Alert.alert('Erro', 'Houve um problema ao salvar os dados.');
     }
-  };
+  }
+
+  // Variável para exibir a imagem ou uma mensagem padrão
+  let imagePreview = <Text style={styles.previewText}>Nenhuma imagem capturada</Text>;
+  if (pickedImage) {
+    imagePreview = <Image source={{ uri: pickedImage }} style={styles.imageStyle} />;
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Adicionar Produto</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Adicionar Dados</Text>
 
-      {/* Campo Local */}
+      <Text style={styles.label}>Local *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Local *"
         value={local}
         onChangeText={setLocal}
+        placeholder="Digite o local"
       />
 
-      {/* Campo Nome */}
+      <Text style={styles.label}>Nome *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nome *"
         value={nome}
         onChangeText={setNome}
+        placeholder="Digite o nome"
       />
 
-      {/* Campo Preço */}
+      <Text style={styles.label}>Preço *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Preço *"
-        keyboardType="numeric"
         value={preco}
         onChangeText={setPreco}
+        placeholder="Digite o preço"
+        keyboardType="numeric"
       />
 
-      {/* Campo Categoria */}
+      <Text style={styles.label}>Categoria *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Categoria *"
         value={categoria}
         onChangeText={setCategoria}
+        placeholder="Digite a categoria"
       />
 
-      {/* Campo Observação */}
+      <Text style={styles.label}>Observação</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Observação"
+        style={[styles.input, styles.textarea]}
         value={observacao}
         onChangeText={setObservacao}
+        placeholder="Digite alguma observação"
         multiline
+        numberOfLines={4}
       />
 
-      {/* Campo para Capturar Foto */}
-      <View style={styles.photoContainer}>
-        <TouchableOpacity style={styles.photoButton} onPress={handleTakePhoto}>
-          <Text style={styles.photoButtonText}>Adicionar Foto</Text>
-        </TouchableOpacity>
-        {foto && (
-          <View style={styles.imagePreview}>
-            <Image source={{ uri: foto }} style={styles.image} />
-            <TouchableOpacity onPress={() => setFoto(null)}>
-              <Text style={styles.deleteText}>Excluir</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+      <View style={styles.imagePreviewContainer}>{imagePreview}</View>
 
-      {/* Botão Salvar */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleAddProduct}>
-        <Text style={styles.saveButtonText}>Salvar</Text>
-      </TouchableOpacity>
-    </View>
+      <Button title="Tirar Foto" onPress={handleTakePhoto} />
+      <Button title="Salvar Dados" onPress={handleSaveData} color="#28a745" />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 5,
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    borderColor: '#ccc',
     padding: 10,
+    borderRadius: 5,
     marginBottom: 15,
-    backgroundColor: "#fff",
+    backgroundColor: '#f9f9f9',
   },
-  photoContainer: {
-    marginBottom: 20,
+  textarea: {
+    height: 80,
   },
-  photoButton: {
-    backgroundColor: "#007BFF",
-    padding: 15,
+  imagePreviewContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 200,
+    backgroundColor: '#f0cced',
+    marginVertical: 8,
     borderRadius: 8,
-    alignItems: "center",
   },
-  photoButtonText: {
-    color: "#fff",
-    fontSize: 16,
+  previewText: {
+    color: '#592454',
   },
-  imagePreview: {
-    marginTop: 10,
-    alignItems: "center",
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
-    marginBottom: 5,
-  },
-  deleteText: {
-    color: "red",
-    fontSize: 14,
-    textDecorationLine: "underline",
-  },
-  saveButton: {
-    backgroundColor: "#28a745",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
+  imageStyle: {
+    width: '100%',
+    height: '100%',
   },
 });

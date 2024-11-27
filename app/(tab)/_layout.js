@@ -9,13 +9,17 @@ export default function TabsLayout() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
          
-          if (route.name === "home") {
-            iconName = "add-circle";
+          if (route.name === "product") {
+            iconName = "home";
+          
           } else if (route.name === "addProduto") {
             iconName = "add-circle";
+          } else if (route.name === "adicionarLocal") {
+            iconName = "add-circle";
+
           } else if (route.name === "perfil") {
             iconName = "person";
-          }
+          } 
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -23,9 +27,12 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tabs.Screen name="home" options={{ title: "home" }} />
+    
+      <Tabs.Screen name="product" options={{ title: "produto" }} />
       <Tabs.Screen name="addProduto" options={{ title: "Adicionar Produto" }} />
       <Tabs.Screen name="perfil" options={{ title: "Perfil" }} />
+      <Tabs.Screen name="adicionarLocal" options={{ title: "local" }} />
+    
     </Tabs>
   );
 }

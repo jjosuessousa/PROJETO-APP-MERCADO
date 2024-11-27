@@ -8,8 +8,7 @@ export default function Layout() {
       <Stack>
         <Stack.Screen name="index" options={{ title: "Login" }} />
         <Stack.Screen
-          name="product"
-          options={{ headerShown: false }}
+         
         />
         <Stack.Screen name="cadastro/index" options={{ title: "Cadastro" }} />
       </Stack>

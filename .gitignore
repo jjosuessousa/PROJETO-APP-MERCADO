@@ -36,3 +36,13 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+app/stores/authStore.js
+app/stores/authStore.js
+app/cadastro/index.js
+app/cadastro/index.js
+app/stores/authStore.js
+app/stores/authStore.js
+app/stores/authStore.js
+app/cadastro/index.js
+package-lock.json
+package.json
