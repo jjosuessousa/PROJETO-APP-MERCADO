@@ -14,7 +14,7 @@ export default function LoginScreen() {
       const response = await Login(usuario, senha);
       if (response.success) {
         Alert.alert('Sucesso', response.message);
-        router.push('product'); // Redireciona para a tela de produtos
+        router.push('home'); // Redireciona para a tela de produtos
       } else {
         Alert.alert('Erro', response.message);
       }

@@ -13,7 +13,7 @@ export default function PerfilScreen() {
   const fetchUserData = async () => {
     if (!token) {
       Alert.alert('Erro', 'Token inválido. Faça login novamente.');
-      router.replace(''); // Redireciona para a tela de login
+      router.replace('editarPerfil'); // Redireciona para a tela de login
       return;
     }
 

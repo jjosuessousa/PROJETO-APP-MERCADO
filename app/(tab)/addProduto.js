@@ -67,20 +67,37 @@ export default function AddDataWithImage() {
     }
 
     try {
-      // Copia a imagem para o armazenamento interno do dispositivo
-      const fileName = pickedImage.split('/').pop(); // Extrai o nome do arquivo da URI
-      const newPath = FileSystem.documentDirectory + fileName;
+      // Crie um objeto com os dados do formulário
+      const productData = {
+        local,
+        nome,
+        preco,
+        categoria,
+        observacao,
+        imagem: pickedImage, // Passa a URI da imagem
+      };
 
-      await FileSystem.copyAsync({ from: pickedImage, to: newPath });
+      // Envia os dados para a API
+      const response = await fetch("https://api-produtos-6p7n.onrender.com/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData), // Converte o objeto para JSON
+      });
 
-      Alert.alert(
-        'Dados Salvos',
-        `Imagem salva com sucesso!\nLocal: ${newPath}\n\nOutros Dados:\n- Local: ${local}\n- Nome: ${nome}\n- Preço: ${preco}\n- Categoria: ${categoria}\n- Observação: ${observacao}`
-      );
+      if (!response.ok) {
+        throw new Error(`Erro ao salvar produto: ${response.statusText}`);
+      }
+
+      // Mensagem de sucesso
+      Alert.alert("Sucesso", "Produto cadastrado com sucesso!");
     } catch (error) {
-      Alert.alert('Erro', 'Houve um problema ao salvar os dados.');
+      console.error("Erro ao cadastrar produto:", error);
+      Alert.alert("Erro", "Houve um problema ao salvar o produto.");
     }
   }
+
 
   // Variável para exibir a imagem ou uma mensagem padrão
   let imagePreview = <Text style={styles.previewText}>Nenhuma imagem capturada</Text>;
