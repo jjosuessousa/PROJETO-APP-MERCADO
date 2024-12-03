@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import useAuthStore from './stores/authStore';
+import useAuthStore from './stores/authStore'; // Ajuste o caminho se necessário
 
 export default function LoginScreen() {
   const [usuario, setUsuario] = useState('');

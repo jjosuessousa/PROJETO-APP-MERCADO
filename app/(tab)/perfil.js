@@ -5,38 +5,43 @@ import useAuthStore from '../stores/authStore';
 
 export default function PerfilScreen() {
   const router = useRouter();
-  const token = useAuthStore((state) => state.token); // Obtém o token
+  const token = useAuthStore((state) => state.token); // Obtém o token do store
   const [user, setUser] = useState(null); // Armazena os dados do usuário
   const [loading, setLoading] = useState(true); // Indicador de carregamento
 
   // Função para buscar dados do perfil
-  const fetchUserData = async () => {
-    if (!token) {
-      Alert.alert('Erro', 'Token inválido. Faça login novamente.');
-      router.replace('editarPerfil'); // Redireciona para a tela de login
-      return;
-    }
+  // Função para buscar dados do perfil
+const fetchUserData = async () => {
+  if (!token) {
+    Alert.alert('Erro', 'Token inválido. Faça login novamente.');
+    console.log(erro01)
+    setLoading(false); // Para de carregar caso o token seja inválido
+    return;
+  }
 
-    try {
-      const response = await fetch('https://dummyjson.com/auth/users/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`, // Envia o token no cabeçalho
-        },
-      });
+  console.log('Token:', token);  // Verifica o token no console
 
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData); // Define os dados do usuário
-      } else {
-        throw new Error('Falha ao buscar os dados do perfil.');
-      }
-    } catch (error) {
-      Alert.alert('Erro', error.message);
-    } finally {
-      setLoading(false); // Oculta indicador de carregamento
+  try {
+    const response = await fetch('https://dummyjson.com/auth/me', { // Corrigido o endpoint
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`, // Envia o token no cabeçalho
+      },
+    });
+
+    if (response.ok) {
+      const userData = await response.json();
+      setUser(userData); // Define os dados do usuário
+    } else {
+      throw new Error('Falha ao buscar os dados do perfil.');
     }
-  };
+  } catch (error) {
+    Alert.alert('Erro', error.message);
+  } finally {
+    setLoading(false); // Oculta indicador de carregamento
+  }
+};
+
 
   // Busca os dados do usuário na montagem do componente
   useEffect(() => {
@@ -51,10 +56,16 @@ export default function PerfilScreen() {
     );
   }
 
-  if (!user) {
+  if (!user && !loading) {
     return (
       <View style={[styles.container, styles.center]}>
         <Text style={styles.errorText}>Não foi possível carregar os dados do perfil.</Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => router.replace('editarPerfil')} // Redireciona para a tela de editar perfil
+        >
+          <Text style={styles.retryButtonText}>Tentar novamente</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -118,22 +129,4 @@ const styles = StyleSheet.create({
   options: {
     marginTop: 20,
   },
-  optionButton: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  optionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  optionSubtitle: {
-    fontSize: 14,
-    color: '#7f8c8d',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#e74c3c',
-  },
-});
+})

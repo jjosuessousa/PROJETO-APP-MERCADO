@@ -13,7 +13,7 @@ export default function CadastroScreen() {
     if (email && senha && nomeCompleto && usuario) {
       // Aqui você pode adicionar a lógica de cadastro, como enviar os dados para uma API.
       Alert.alert('Cadastro realizado com sucesso!');
-      router.push(''); // Redireciona para a tela de login após o cadastro.
+      router.navigate('Home'); // Redireciona para a tela de login após o cadastro.
     } else {
       Alert.alert('Preencha todos os campos!');
     }

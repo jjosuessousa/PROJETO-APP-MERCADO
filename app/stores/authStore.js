@@ -1,10 +1,11 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 const useAuthStore = create((set) => ({
   usuarioLogado: false,
   token: '',
   Login: async (usuario, senha) => {
     try {
+
       const loginResponse = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -14,21 +15,38 @@ const useAuthStore = create((set) => ({
         }),
       });
 
+     
       if (loginResponse.ok) {
         const loginData = await loginResponse.json();
+        console.log('Token do login:', loginData.token);
+        
+
+        if(loginData.token)
         set({
           usuarioLogado: true,
           token: loginData.token, // Armazena o token retornado
         });
+       
         return { success: true, message: 'Usuário logado com sucesso!' };
+        
       } else {
         const errorData = await loginResponse.json();
         return { success: false, message: errorData.message || 'Erro ao fazer login!' };
+     
       }
     } catch (error) {
       return { success: false, message: 'Ocorreu um erro inesperado. Tente novamente!' };
     }
   },
+
+  logout: () => {
+    set({
+      usuarioLogado: false,
+      token: '', // Limpa o token
+    });
+  },
+
+  setErrorMessage: (message) => set({ errorMessage: message }),
 }));
 
 export default useAuthStore;

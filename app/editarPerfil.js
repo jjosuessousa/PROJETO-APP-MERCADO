@@ -15,13 +15,13 @@ export default function EditarPerfilScreen() {
   const handleSalvar = () => {
     // Aqui você pode adicionar lógica para enviar os dados para a API
     Alert.alert('Perfil Atualizado', 'Suas alterações foram salvas com sucesso.');
-    router.back('perfil'); // Retorna para a tela anterior
+    router.navigate('home'); // Retorna para a tela anterior
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back('')} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.navigate('./perfil')} style={styles.backButton}>
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Perfil</Text>
