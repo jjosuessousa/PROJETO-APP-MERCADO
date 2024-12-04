@@ -6,8 +6,8 @@ export default function EditarPerfilScreen() {
   const router = useRouter();
 
   // Estados para os campos de edição
-  const [nome, setNome] = useState('Lizza');
-  const [email, setEmail] = useState('lizza@example.com');
+  const [nome, setNome] = useState('Emily');
+  const [email, setEmail] = useState('emily@example.com');
   const [cpf, setCpf] = useState('123.456.789-00');
   const [senha, setSenha] = useState('');
   const [telefone, setTelefone] = useState('(11) 98765-4321');
@@ -29,7 +29,7 @@ export default function EditarPerfilScreen() {
 
       <View style={styles.profile}>
         <Image
-          source={{ uri: 'https://dummyjson.com/users/1' }} // Imagem de perfil genérica
+          source={{ uri:  "https://dummyjson.com/icon/emilys/128" }} // Imagem de perfil genérica
           style={styles.profileImage}
         />
         <Text style={styles.profileName}>{nome}</Text>

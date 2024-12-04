@@ -1,163 +1,136 @@
-import React, { useState } from 'react'; 
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native'; 
- 
-export default function AddLocation() { 
-  const [name, setName] = useState(''); 
-  const [cep, setCep] = useState(''); 
-  const [logradouro, setLogradouro] = useState(''); 
-  const [numero, setNumero] = useState(''); 
-  const [bairro, setBairro] = useState(''); 
-  const [cidade, setCidade] = useState(''); 
-  const [estado, setEstado] = useState(''); 
-  const [loading, setLoading] = useState(false); 
- 
-  // Função para buscar os dados do endereço a partir do CEP 
-  const fetchAddressByCep = async (cep) => { 
-    if (cep.length !== 8) return; // Validar se o CEP tem 8 caracteres 
- 
-    setLoading(true); 
-     
-    try { 
-      const response = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`); 
-       
-      // Verificar se a resposta foi bem-sucedida 
-      if (response.ok) { 
-        const data = await response.json(); 
-         
-        // Verifica se os dados existem 
-        if (data) { 
-          setLogradouro(data.street || ''); 
-          setBairro(data.neighborhood || ''); 
-          setCidade(data.city || ''); 
-          setEstado(data.state || ''); 
-        } else { 
-          Alert.alert('CEP não encontrado!', 'O CEP informado não retornou resultados válidos.'); 
-        } 
-      } else { 
-        throw new Error('Falha ao buscar o CEP. Tente novamente.'); 
-      } 
-    } catch (error) { 
-      console.error('Erro ao buscar o CEP:', error); 
-      Alert.alert('Erro ao buscar o CEP', 'Tente novamente mais tarde.'); 
-    } finally { 
-      setLoading(false); 
-    } 
-  }; 
- 
-  const handleSave = () => { 
-    // Aqui, você pode implementar a lógica para salvar os dados no servidor ou no estado global. 
-    console.log({ 
-      name, 
-      cep, 
-      logradouro, 
-      numero, 
-      bairro, 
-      cidade, 
-      estado, 
-    }); 
-    Alert.alert('Dados salvos com sucesso!'); 
-  }; 
- 
-  return ( 
-    <ScrollView contentContainerStyle={styles.container}> 
-      <Text style={styles.title}>Adicionar Local</Text> 
- 
-      <Text style={styles.label}>Nome *</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={name} 
-        onChangeText={setName} 
-        placeholder="Digite o nome" 
-      /> 
- 
-      <Text style={styles.label}>CEP</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={cep} 
-        onChangeText={(text) => { 
-          setCep(text); 
-          if (text.length === 8) { 
-            fetchAddressByCep(text); // Chama a função para buscar dados do CEP 
-          } 
-        }} 
-        placeholder="Digite o CEP" 
-        keyboardType="numeric" 
-      /> 
- 
-      {loading && <Text>Carregando...</Text>} 
- 
-      <Text style={styles.label}>Logradouro</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={logradouro} 
-        onChangeText={setLogradouro} 
-        placeholder="Digite o logradouro" 
-        editable={false} // Desabilitado, pois será preenchido automaticamente 
-      /> 
- 
-      <Text style={styles.label}>Nº</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={numero} 
-        onChangeText={setNumero} 
-        placeholder="Digite o número" 
-        keyboardType="numeric" 
-      /> 
- 
-      <Text style={styles.label}>Bairro</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={bairro} 
-        onChangeText={setBairro} 
-        placeholder="Digite o bairro" 
-        editable={false} // Desabilitado, pois será preenchido automaticamente 
-      /> 
- 
-      <Text style={styles.label}>Cidade</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={cidade} 
-        onChangeText={setCidade} 
-        placeholder="Digite a cidade" 
-        editable={false} // Desabilitado, pois será preenchido automaticamente 
-      /> 
- 
-      <Text style={styles.label}>Estado</Text> 
-      <TextInput 
-        style={styles.input} 
-        value={estado} 
-        onChangeText={setEstado} 
-        placeholder="Digite o estado" 
-        editable={false} // Desabilitado, pois serápreenchido automaticamente 
-        /> 
-   
-        <Button title="Salvar" onPress={handleSave} color="#28a745" /> 
-      </ScrollView> 
-    ); 
-  } 
-   
-  const styles = StyleSheet.create({ 
-    container: { 
-      padding: 20, 
-      backgroundColor: '#fff', 
-    }, 
-    title: { 
-      fontSize: 20, 
-      fontWeight: 'bold', 
-      marginBottom: 20, 
-      textAlign: 'center', 
-    }, 
-    label: { 
-      fontSize: 14, 
-      marginBottom: 5, 
-      fontWeight: 'bold', 
-    }, 
-    input: { 
-      borderWidth: 1, 
-      borderColor: '#ccc', 
-      padding: 10, 
-      borderRadius: 5, 
-      marginBottom: 15, 
-      backgroundColor: '#f9f9f9', 
-    }, 
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from 'react-native';
+
+export default function AddLocation() {
+  const [locations, setLocations] = useState([]);
+  const [formData, setFormData] = useState({
+    nome: '',
+    cep: '',
+    logradouro: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
   });
+  const [loading, setLoading] = useState(false);
+
+  // Atualiza os dados do formulário
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  // Função para adicionar um novo local
+  const addLocation = async () => {
+    // Valida se todos os campos obrigatórios foram preenchidos
+    if (!formData.nome || !formData.cep) {
+      Alert.alert('Erro', 'Os campos Nome e CEP são obrigatórios.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'https://api-produtos-6p7n.onrender.com/locations',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        const addedLocation = await response.json();
+        setLocations((prev) => [...prev, addedLocation]); // Adiciona o local na lista
+        Alert.alert('Sucesso', 'Local adicionado com sucesso!');
+        setFormData({
+          nome: '',
+          cep: '',
+          logradouro: '',
+          numero: '',
+          bairro: '',
+          cidade: '',
+          estado: '',
+        }); // Limpa os campos do formulário
+      } else {
+        const errorData = await response.json();
+        Alert.alert('Erro', errorData.message || 'Erro ao adicionar o local.');
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar o local:', error);
+      Alert.alert('Erro', 'Ocorreu um erro de rede. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Adicionar Local</Text>
+
+      {/* Campos do formulário */}
+      {[
+        { label: 'Nome *', field: 'nome' },
+        { label: 'CEP *', field: 'cep', keyboardType: 'numeric' },
+        { label: 'Logradouro', field: 'logradouro' },
+        { label: 'Nº', field: 'numero', keyboardType: 'numeric' },
+        { label: 'Bairro', field: 'bairro' },
+        { label: 'Cidade', field: 'cidade' },
+        { label: 'Estado', field: 'estado' },
+      ].map(({ label, field, keyboardType }) => (
+        <TextInput
+          key={field}
+          style={styles.input}
+          placeholder={label}
+          value={formData[field]}
+          onChangeText={(value) => handleInputChange(field, value)}
+          keyboardType={keyboardType || 'default'}
+        />
+      ))}
+
+      {/* Botão de salvar */}
+      <View style={styles.buttonContainer}>
+        <Button
+          title={loading ? 'Salvando...' : 'Salvar'}
+          onPress={addLocation}
+          disabled={loading}
+          color="#28a745"
+        />
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  buttonContainer: {
+    marginTop: 20,
+  },
+});

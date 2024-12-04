@@ -251,6 +251,6 @@ const styles = StyleSheet.create({
   removeButtonText: { color: 'white', textAlign: 'center' },
   addButton: { backgroundColor: 'blue', padding: 10, borderRadius: 5, marginBottom: 10 },
   addButtonText: { color: 'white', textAlign: 'center' },
-  saveButton: { backgroundColor: 'green', padding: 15, borderRadius: 5 },
+  saveButton: { backgroundColor: '#28a745', padding: 15, borderRadius: 5 },
   saveButtonText: { color: 'white', textAlign: 'center', fontSize: 16 },
 });
