@@ -3,13 +3,15 @@ Projeto de Trabalho -  APLICATIVO MOBILE DE MERCADO
 
 Este projeto foi desenvolvido como parte do curso de Análise e Desenvolvimento de Sistemas, especificamente para a disciplina "DESENVOLVIMENTO DE APLICATIVO" na Uninorte Acre.
 
-<img src ='https://github.com/jjosuessousa/PROJETO-APP-MERCADO/blob/master/assets/images/REAME%20LOGIN.jpg?raw=true'/>
+<img src ='https://www.figma.com/design/F6NTftnXGB1S9svIxMYiWm/Untitled?node-id=0-1&node-type=canvas&t=aTwhFjnYimfqqB1x-0'/>
 
 
 
 
 Descrição
-Este repositório contém o código de um aplicativo móvel desenvolvido com React Native e Expo. O aplicativo oferece funcionalidades de login, cadastro, visualização e edição de perfil de usuários, e gerenciamento de produtos e categorias.
+Este repositório contém o código de um aplicativo móvel desenvolvido com React Native e Expo. O aplicativo oferece funcionalidades de login, cadastro, 
+visualização e edição de perfil de usuários, 
+e gerenciamento de produtos e categorias.
 
 
 
@@ -20,11 +22,15 @@ React Native: Para o desenvolvimento do aplicativo móvel.
 Expo: Para facilitar o desenvolvimento com React Native.
 State Management (Zustand): Para gerenciamento de estado.
 API (DummyJSON): Para autenticação e consumo de dados.
-Funcionalidades
+
+
+funcionalidades:
+
 Tela de Login: Permite ao usuário fazer login usando autenticação.
 Tela de Cadastro: Permite ao usuário criar uma conta.
 Tela de Perfil: Exibe e permite a edição de informações do perfil.
-Tela de Produtos: Exibe produtos e categorias, com a possibilidade de adicionar e editar.
+Tela de Produtos: Exibe produtos e categorias,
+ com a possibilidade de adicionar e editar.
 
 
 
@@ -75,4 +81,5 @@ Abra o aplicativo no emulador ou no dispositivo físico via Expo Go.
 
 Contribuindo:
 
-Sinta-se à vontade para fazer contribuições através de pull requests. Certifique-se de que seu código siga as convenções de estilo e que todas as funcionalidades estejam bem testadas.
+Sinta-se à vontade para fazer contribuições através de pull requests. 
+Certifique-se de que seu código siga as convenções de estilo e que todas as funcionalidades estejam bem testadas.
