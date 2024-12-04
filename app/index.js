@@ -4,20 +4,22 @@ import { useRouter } from 'expo-router';
 import useAuthStore from './stores/authStore'; // Ajuste o caminho se necessário
 
 export default function LoginScreen() {
-  const [usuario, setUsuario] = useState('');
-  const [senha, setSenha] = useState('');
-  const Login = useAuthStore((state) => state.Login);
+  const [usuario, setUsuario] = useState('emilys'); // Estado para o usuário
+  const [senha, setSenha] = useState('emilyspass'); // Estado para a senha
+  const Login = useAuthStore((state) => state.Login); // Obtém a função Login do Zustand
   const router = useRouter();
 
+  // Função de login
   const logar = async () => {
+    console.log('Botão de login pressionado'); // Log para depuração
     if (usuario && senha) {
-      const response = await Login(usuario, senha);
+      console.log('Iniciando login com:', usuario, senha); // Log do estado
+      const response = await Login(usuario, senha); // Chama a função Login do Zustand
+      console.log('aquiResposta do login:', response); // Log da resposta
       if (response.success) {
         Alert.alert('Sucesso', response.message);
-        router.push('home'); // Redireciona para a tela de produtos
-      } else {
-        Alert.alert('Erro', response.message);
-      }
+        router.push('/home'); // Redireciona para a tela principal
+      }  
     } else {
       Alert.alert('Atenção', 'Preencha todos os campos!');
     }
@@ -63,7 +65,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       {/* Link de Registrar */}
-      <TouchableOpacity onPress={() => router.push('cadastro')}>
+      <TouchableOpacity onPress={() => router.push('/cadastro')}>
         <Text style={styles.registerText}>Registrar</Text>
       </TouchableOpacity>
     </View>

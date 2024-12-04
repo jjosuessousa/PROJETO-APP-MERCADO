@@ -1,52 +1,81 @@
 import { create } from 'zustand';
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create((set, get) => ({
+  token: '', // Inicialmente o token está vazio
   usuarioLogado: false,
-  token: '',
-  Login: async (usuario, senha) => {
-    try {
 
-      const loginResponse = await fetch('https://dummyjson.com/auth/login', {
+  // Função para fazer login e armazenar o token
+  Login: async (username, password) => {
+    console.log('Botão de login pressionado');
+    console.log(`Iniciando login com: ${username} ${password}`);
+
+    try {
+      const response = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: usuario, // Nome de usuário
-          password: senha,   // Senha do usuário
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
 
-     
-      if (loginResponse.ok) {
-        const loginData = await loginResponse.json();
-        console.log('Token do login:', loginData.token);
-        
+      const data = await response.json();
 
-        if(loginData.token)
+      if (response.ok) { // Verifica se o status HTTP indica sucesso
+        console.log('Login bem-sucedido:', data);
         set({
+          token: data.accessToken,
           usuarioLogado: true,
-          token: loginData.token, // Armazena o token retornado
         });
-       
-        return { success: true, message: 'Usuário logado com sucesso!' };
-        
+        return { success: true, data };
       } else {
-        const errorData = await loginResponse.json();
-        return { success: false, message: errorData.message || 'Erro ao fazer login!' };
-     
+        console.error('Erro no login:', data.message || 'Erro desconhecido');
+        return { success: false, message: data.message || 'Erro ao fazer login' };
       }
     } catch (error) {
-      return { success: false, message: 'Ocorreu um erro inesperado. Tente novamente!' };
+      console.error('Erro ao fazer login:', error);
+      return { success: false, message: 'Erro inesperado. Tente novamente!' };
     }
   },
 
-  logout: () => {
-    set({
-      usuarioLogado: false,
-      token: '', // Limpa o token
-    });
+  // Função para obter detalhes do usuário usando o token
+  getUserDetails: async () => {
+    const token = get().token; // Recupera o token armazenado
+
+    if (!token) {
+      return { success: false, message: 'Token não encontrado!' };
+    }
+
+    try {
+      const response = await fetch('https://dummyjson.com/auth/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`, // Inclui o token no cabeçalho Authorization
+        },
+        credentials: 'include', // Inclui cookies, se necessário
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Detalhes do usuário:', data);
+        return { success: true, data };
+      } else {
+        console.error('Erro ao obter detalhes do usuário:', data.message || 'Erro desconhecido');
+        return { success: false, message: data.message || 'Erro ao obter detalhes do usuário!' };
+      }
+    } catch (error) {
+      console.error('Erro ao obter detalhes do usuário:', error);
+      return { success: false, message: 'Erro inesperado. Tente novamente!' };
+    }
   },
 
-  setErrorMessage: (message) => set({ errorMessage: message }),
+  // Função para realizar logout
+  logout: () => {
+    set({ token: '', usuarioLogado: false });
+  },
+
+  // Obter o token armazenado
+  getToken: () => get().token,
 }));
 
 export default useAuthStore;
