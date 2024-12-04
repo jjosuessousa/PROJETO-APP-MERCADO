@@ -4,9 +4,6 @@ Projeto de Trabalho -  APLICATIVO MOBILE DE MERCADO
 Este projeto foi desenvolvido como parte do curso de Análise e Desenvolvimento de Sistemas, especificamente para a disciplina "DESENVOLVIMENTO DE APLICATIVO" na Uninorte Acre.
 
 
-IMAGENS DO PROJETO:
-<img src ='file:///C:/Users/Desktop/Downloads/Telegram%20Desktop/Projeto%20faculdade%20_241116_103832.pdf'/>
-
 
 
 
@@ -87,3 +84,9 @@ Contribuindo:
 
 Sinta-se à vontade para fazer contribuições através de pull requests. 
 Certifique-se de que seu código siga as convenções de estilo e que todas as funcionalidades estejam bem testadas.
+
+
+IMAGEM DO PROJETO:
+  <img src='https://github.com/jjosuessousa/PROJETO-APP-MERCADO/blob/master/assets/images/REAME%20LOGIN.jpg?raw=true'/>
+  <img src='https://github.com/jjosuessousa/PROJETO-APP-MERCADO/blob/master/assets/images/README.jpg?raw=true'/>
+  <img src='https://github.com/jjosuessousa/PROJETO-APP-MERCADO/blob/master/assets/images/PRODUTO.jpg?raw=true'/>
