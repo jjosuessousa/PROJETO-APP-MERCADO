@@ -3,7 +3,11 @@ Projeto de Trabalho -  APLICATIVO MOBILE DE MERCADO
 
 Este projeto foi desenvolvido como parte do curso de Análise e Desenvolvimento de Sistemas, especificamente para a disciplina "DESENVOLVIMENTO DE APLICATIVO" na Uninorte Acre.
 
-<img src ='https://www.figma.com/design/F6NTftnXGB1S9svIxMYiWm/Untitled?node-id=0-1&node-type=canvas&t=aTwhFjnYimfqqB1x-0'/>
+
+IMAGENS DO PROJETO:
+<img src ='file:///C:/Users/Desktop/Downloads/Telegram%20Desktop/Projeto%20faculdade%20_241116_103832.pdf'/>
+
+
 
 
 
