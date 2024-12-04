@@ -1,6 +1,8 @@
 Projeto de Trabalho -  APLICATIVO MOBILE DE MERCADO
 Este projeto foi desenvolvido como parte do curso de Análise e Desenvolvimento de Sistemas, especificamente para a disciplina "DESENVOLVIMENTO DE APLICATI" na Uninorte Acre.
 
+<img src ='https://github.com/jjosuessousa/PROJETO-APP-MERCADO/blob/master/assets/images/REAME%20LOGIN.jpg?raw=true'/>
+
 Descrição
 Este repositório contém o código de um aplicativo móvel desenvolvido com React Native e Expo. O aplicativo oferece funcionalidades de login, cadastro, visualização e edição de perfil de usuários, e gerenciamento de produtos e categorias.
 
