@@ -15,7 +15,7 @@ export default function EditarPerfilScreen() {
   const handleSalvar = () => {
     // Aqui você pode adicionar lógica para enviar os dados para a API
     Alert.alert('Perfil Atualizado', 'Suas alterações foram salvas com sucesso.');
-    router.navigate('home'); // Retorna para a tela anterior
+    router.back(''); // Retorna para a tela anterior
   };
 
   return (

@@ -94,7 +94,7 @@ export default function PerfilScreen() {
           style={styles.optionButton}
           onPress={() => {
             logout(); // Executa logout
-            router.replace('/login'); // Redireciona para a tela de login
+            router.replace('home'); // Redireciona para a tela de login
           }}
         >
           <Text style={styles.optionTitle}>Sair</Text>

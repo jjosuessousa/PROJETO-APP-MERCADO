@@ -17,7 +17,7 @@ export default function LoginScreen() {
       const response = await Login(usuario, senha); // Chama a função Login do Zustand
       console.log('aquiResposta do login:', response); // Log da resposta
       if (response.success) {
-        Alert.alert('Sucesso', response.message);
+        Alert.alert('LOGADO COM SUCESSO', response.message);
         router.push('/home'); // Redireciona para a tela principal
       }  
     } else {
